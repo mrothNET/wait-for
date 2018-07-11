@@ -129,14 +129,19 @@ static int is_satisfactory(const cli_args *restrict args, const char *username, 
 	}
 
 	bool has_type_preference = args->socket || args->directory || args->regular || args->pipe;
+
+	bool type_satisfied = false;
 	if (has_type_preference) {
 		switch (stats.st_mode & S_IFMT) {
-		case S_IFIFO: return args->pipe ? 1 : 0;
-		case S_IFDIR: return args->directory ? 1 : 0;
-		case S_IFREG: return args->regular ? 1 : 0;
-		case S_IFSOCK: return args->socket ? 1 : 0;
-		default: return 0;
+			case S_IFIFO: type_satisfied = args->pipe; break;
+			case S_IFDIR: type_satisfied = args->directory; break;
+			case S_IFREG: type_satisfied = args->regular; break;
+			case S_IFSOCK: type_satisfied = args->socket; break;
 		}
+	}
+
+	if (has_type_preference && !type_satisfied) {
+		return 0;
 	}
 
 	bool is_in_group = false;
