@@ -233,8 +233,14 @@ int main(int argc, const char **argv) {
 		goto exit;
 	}
 
-	if (extrac != 1) {
-		fprintf(stderr, "error: expected exactly one positional argument (the file to wait for) - got %d\n", extrac);
+	if (extrac < 1) {
+		fprintf(stderr, "error: missing argument (the file to wait for). See 'wait-for --help'.\n");
+		status = 2;
+		goto exit;
+	}
+
+	if (extrac > 1) {
+		fprintf(stderr, "error: to many arguments. See 'wait-for --help'.\n");
 		status = 2;
 		goto exit;
 	}
